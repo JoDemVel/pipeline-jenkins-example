@@ -8,9 +8,12 @@ pipeline{
         maven 'maven-396'
         jdk 'jdk21'
     }
+    parameters{
+      string(name: 'BRANCH', defaultValue: 'dev', description: 'Colocar un branch a deployar')
+    }
     environment{
-        //workspace="/data/"
-        string defaultValue: 'dev', description: 'Colocar un branch a deployar', name: 'BRANCH', trim: false
+        workspace="/data/"
+        //string defaultValue: 'dev', description: 'Colocar un branch a deployar', name: 'BRANCH', trim: false
     }
     stages{
         stage("Clean"){
