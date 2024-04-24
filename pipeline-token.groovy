@@ -1,4 +1,3 @@
-def url_repo = "https://${GITHUB_TOKEN}@github.com/JoDemVel/babels.git"
 pipeline{
    agent
    {
@@ -9,11 +8,11 @@ pipeline{
         jdk 'jdk21'
     }
     parameters{
-      string(name: 'BRANCH', defaultValue: 'dev', description: 'Colocar un branch a deployar')
+      string(name: 'BRANCH', defaultValue: 'develop', description: 'Colocar un branch a deployar')
     }
     environment{
         workspace="/data/"
-        GITHUB_TOKEN = credentials('ACCESS_TOKEN')
+        ACCESS_TOKEN = credentials('ACCESS_TOKEN')
     }
     stages{
         stage("Create build name"){
@@ -30,7 +29,7 @@ pipeline{
         }
         stage("Download project"){
             steps{
-                git credentialsId: 'git_credentials', branch: "${BRANCH}", url: "${url_repo}"
+                git credentialsId: 'git_credentials', branch: "${BRANCH}", url: "https://${ACCESS_TOKEN}@github.com/JoDemVel/babels.git"
                 echo "Downloaded project"
             }
         }
@@ -38,10 +37,11 @@ pipeline{
         {
             steps{
                 sh "mvn clean compile package -Dmaven.test.skip=true -U"
-                sh "mv am-core-web-service/target/*.jar am-core-web-service/target/app.jar"
-                stash includes: 'am-core-web-service/target/app.jar', name: 'backartifact'
-                archiveArtifacts artifacts: 'am-core-web-service/target/app.jar', onlyIfSuccessful: true
-                sh "cp am-core-web-service/target/app.jar /tmp/"
+                sh "pwd"
+                sh "mv target/*.jar target/app.jar"
+                stash includes: 'target/app.jar', name: 'backartifact'
+                archiveArtifacts artifacts: 'target/app.jar', onlyIfSuccessful: true
+                sh "cp target/app.jar /tmp/"
             }
         }
         stage("Test vulnerability")
@@ -59,9 +59,9 @@ pipeline{
 						sonar.projectName=academy
 						sonar.projectVersion=academy
 						sonar.sourceEncoding=UTF-8
-						sonar.sources=am-core-web-service/src/main/
-						sonar.java.binaries=am-core-web-service/target/
-						sonar.java.libraries=am-core-web-service/target/classes
+						sonar.sources=src/main/
+						sonar.java.binaries=target/
+						sonar.java.libraries=target/classes
 						sonar.language=java
 						sonar.scm.provider=git
 						"""
