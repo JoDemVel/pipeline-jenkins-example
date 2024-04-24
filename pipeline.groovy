@@ -16,7 +16,7 @@ pipeline{
         workspace="/data/"
     }
     stages{
-        stage{
+        stage("Create build name"){
           steps{
             currentBuild.displayName = "service_back-"+currentBuild.number
           }
