@@ -1,4 +1,4 @@
-def url_repo = "https://${ACCESS_TOKEN}@github.com/JoDemVel/babels.git"
+def url_repo = "https://${GITHUB_TOKEN}@github.com/JoDemVel/babels.git"
 pipeline{
    agent
    {
