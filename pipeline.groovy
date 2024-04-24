@@ -10,12 +10,17 @@ pipeline{
     }
     parameters{
       string(name: 'BRANCH', defaultValue: 'dev', description: 'Colocar un branch a deployar')
+        //string defaultValue: 'dev', description: 'Colocar un branch a deployar', name: 'BRANCH', trim: false
     }
     environment{
         workspace="/data/"
-        //string defaultValue: 'dev', description: 'Colocar un branch a deployar', name: 'BRANCH', trim: false
     }
     stages{
+        stage{
+          steps{
+            currentBuild.displayName = "service_back-"+currentBuild.number
+          }
+        }
         stage("Clean"){
             steps{
                 cleanWs()
@@ -25,6 +30,7 @@ pipeline{
             steps{
                 git credentialsId: 'git_credentials', branch: "${BRANCH}", url: "${url_repo}"
                 echo "Downloaded project"
+                //echo env.workspace
             }
         }
         stage('Build proyect')
