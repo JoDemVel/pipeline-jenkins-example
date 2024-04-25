@@ -9,6 +9,7 @@ pipeline{
     }
     parameters{
       string(name: 'BRANCH', defaultValue: 'develop', description: 'Colocar un branch a deployar')
+      choice(name: 'TEST_VULNERAVILITY', choices: ['YES', 'NO'], description: 'Colocar YES para realizar el test de vulnerabilidad')
     }
     environment{
         workspace="/data/"
@@ -46,6 +47,7 @@ pipeline{
         }
         stage("Test vulnerability")
         {
+            when(equals expected: 'YES', actual: "${TEST_VULNERAVILITY}")
             steps{
                sh "/grype /tmp/app.jar > informe-scan.txt"
                archiveArtifacts artifacts: 'informe-scan.txt', onlyIfSuccessful: true
